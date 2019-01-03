@@ -10,21 +10,27 @@
 //  9 = What facilities?
 
 function OnSubmit() {
-  
-  var testForm = FormApp.openById("1JK2oTlp-uzfqfRGBqA1DPbMzLqZWAW0HsUuo3bDpfOk");
-  
-  var responseArr = testForm.getResponses();
-  var items = responseArr[responseArr.length - 1].getItemResponses();
-  
-  var event = saveFormResponses(items);
-  
-  if(!preliminaryCheck(event)) { return; }
-    
-  if(!checkAvailability(event))
-  {
-    //spot not available
-    return;
-  }
-  
-  debugger;
+
+    var testForm = FormApp.openById("1JK2oTlp-uzfqfRGBqA1DPbMzLqZWAW0HsUuo3bDpfOk");
+
+    var responseArr = testForm.getResponses();
+    var items = responseArr[responseArr.length - 1].getItemResponses();
+
+    var event = saveFormResponses(items);
+
+    if (!preliminaryCheck(event)) {
+        return;
+    }
+
+    if (!checkAvailability(event)) {
+        //spot not available
+        return;
+    }
+
+    debugger;
 }
+
+var RECURRENCE = {
+    option1: "Weekly (Same day every week)",
+    option2: "Biweekly (Same day every two weeks)"
+}; 

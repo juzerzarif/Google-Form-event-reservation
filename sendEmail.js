@@ -10,66 +10,67 @@
 //  9 = What facilities?
 
 var itemTitles = {
-  organizer: "Name",
-  organizerEmail: "Email",
-  name: "Event Name",
-  start: "Event Start",
-  end: "Event End",
-  recurringBool: "Is this a recurring event?",
-  recurringType: "If answered yes above, explain the nature of recurrence",
-  description: "Event Description",
-  facilitiesBool: "Will you be using any of the facilities in the Rec Room?",
-  facilitiesDescription: "If answered yes above, explain how and what facilities you will be using?" }; 
-  
+    organizer: "Name",
+    organizerEmail: "Email",
+    name: "Event Name",
+    start: "Event Start",
+    end: "Event End",
+    recurringBool: "Is this a recurring event?",
+    recurringType: "If answered yes above, explain the nature of recurrence",
+    description: "Event Description",
+    facilitiesBool: "Will you be using any of the facilities in the Rec Room?",
+    facilitiesDescription: "If answered yes above, explain how and what facilities you will be using?"
+};
+
 function sendEmail(eventObj, reply) {
-  var eventArr = Object.keys(eventObj).map(function(e) {return eventObj[e];});
-  eventArr[3] = eventArr[3].toLocaleString();
-  eventArr[4] = eventArr[4].toLocaleString();
-  var titleArr = Object.keys(itemTitles).map(function(e) {return itemTitles[e];});
-  
-  var message = "<table style='border-collapse: collapse; border: 1px solid black' cellpadding='5'>";
-  
-  for (i=0; i<titleArr.length; i++)
-  {
-    message += "<tr>";
-    message += "<td style='border: 1px solid black'><b>"+ titleArr[i] + " :</b></td>"
-    message += "<td style='border: 1px solid black'> " + eventArr[i] + "</td>";
-    message += "</tr>";
-  }
-  message += "</table>";
-  
-  var subjectLine = "Rec Room Reservation Form" + (reply? " - Auto-reply" : " - Action required");
-  GmailApp.sendEmail("stephensonscholhall52@gmail.com", subjectLine,"", {
-    name: eventObj.organizer,
-    replyTo: eventObj.organizerEmail,
-    htmlBody: message
-  });
-  
-  if(reply)
-  {
-    try
-    {
-      Utilities.sleep(5000);
-      var emailThreads = GmailApp.search("subject: Rec Room Reservation Form", 0, 1);
-      var mostRecentEmail = emailThreads[0];
-      mostRecentEmail.reply(reply);
+    var eventArr = Object.keys(eventObj).map(function (e) {
+        return eventObj[e];
+    });
+    eventArr[3] = eventArr[3].toLocaleString();
+    eventArr[4] = eventArr[4].toLocaleString();
+    var titleArr = Object.keys(itemTitles).map(function (e) {
+        return itemTitles[e];
+    });
+
+    var message = "<table style='border-collapse: collapse; border: 1px solid black' cellpadding='5'>";
+
+    for (i = 0; i < titleArr.length; i++) {
+        message += "<tr>";
+        message += "<td style='border: 1px solid black'><b>" + titleArr[i] + " :</b></td>"
+        message += "<td style='border: 1px solid black'> " + eventArr[i] + "</td>";
+        message += "</tr>";
     }
-    catch(e)
-    {
-      Logger.log(e);
-      return;
+    message += "</table>";
+
+    var subjectLine = "Rec Room Reservation Form" + (reply ? " - Auto-reply" : " - Action required");
+    GmailApp.sendEmail("stephensonscholhall52@gmail.com", subjectLine, "", {
+        name: eventObj.organizer,
+        replyTo: eventObj.organizerEmail,
+        htmlBody: message
+    });
+
+    if (reply) {
+        try {
+            Utilities.sleep(5000);
+            var emailThreads = GmailApp.search("subject: Rec Room Reservation Form", 0, 1);
+            var mostRecentEmail = emailThreads[0];
+            mostRecentEmail.reply(reply);
+        } catch (e) {
+            Logger.log(e);
+            return;
+        }
     }
-  }
 }
 
 var event1 = {
-  organizer: "Juzer Zarif",
-  organizerEmail: "juzerapj@gmail.com",
-  name: "Test Event",
-  start: new Date(),
-  end: new Date(),
-  recurringBool: "Is this a recurring event?",
-  recurringType: "If answered yes above, explain the nature of recurrence",
-  description: "Event Description",
-  facilitiesBool: "Will you be using any of the facilities in the Rec Room?",
-  facilitiesDescription: "If answered yes above, explain how and what facilities you will be using?" };
+    organizer: "Juzer Zarif",
+    organizerEmail: "juzerapj@gmail.com",
+    name: "Test Event",
+    start: new Date(),
+    end: new Date(),
+    recurringBool: "Is this a recurring event?",
+    recurringType: "If answered yes above, explain the nature of recurrence",
+    description: "Event Description",
+    facilitiesBool: "Will you be using any of the facilities in the Rec Room?",
+    facilitiesDescription: "If answered yes above, explain how and what facilities you will be using?"
+};

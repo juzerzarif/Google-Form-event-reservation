@@ -28,7 +28,7 @@ function OnSubmit() {
         //spot not available
         return;
     }
-    
+
     createEvent(event, availObj);
 
     debugger;
@@ -36,5 +36,6 @@ function OnSubmit() {
 
 var RECURRENCE = {
     option1: "Weekly (Same day every week)",
-    option2: "Biweekly (Same day every two weeks)"
+    option2: "Biweekly (Same day every two weeks)",
+    option3: "Monthly"
 }; 

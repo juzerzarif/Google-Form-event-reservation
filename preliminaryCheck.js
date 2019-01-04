@@ -32,7 +32,7 @@ function preliminaryCheck(event) {
     }
 
     var recur = event.recurrenceType;
-    if (recur != RECURRENCE.option1 && recur != RECURRENCE.option2) {
+    if (recur != RECURRENCE.option1 && recur != RECURRENCE.option2 && recur != RECURRENCE.option3) {
         sendEmail(event, false);
         return false;
     }

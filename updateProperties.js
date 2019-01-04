@@ -20,6 +20,6 @@ function updateProperties() {
         daylightSavings = new Date(daylightSavings.getTime() + (offset * 24 * 60 * 60 * 1000));
     }
     
-    properties.put("daylightSavingsDate", daylightSavings.toJSON);
-    properties.put("daylightSavingsOffset", daylightOffset);
+    properties.setProperty("daylightSavingsDate", daylightSavings.toUTCString());
+    properties.setProperty("daylightSavingsOffset", daylightOffset);
 }

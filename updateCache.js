@@ -69,10 +69,3 @@ function findDate(webpage, label) {
     var date = webpage.substring(dateIndex, tagIndex);
     return date;
 }
-
-
-function blah() {
-    CacheService.getScriptCache().put("stopDayDate", Friday, 10);
-    //  Utilities.sleep(11000);
-    Logger.log(CacheService.getScriptCache().get("stopDayDate"));
-}

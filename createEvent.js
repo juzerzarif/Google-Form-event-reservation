@@ -1,9 +1,9 @@
 function createEvent(event, avObj) {
     var calendar = CalendarApp.getDefaultCalendar();
-
+    var eventName = "["+event.organizer.split(" ")[0]+"] "+event.name;
     if (event.recurrenceBool == "No") {
         //create a single event
-        calendar.createEvent(event.name, event.start, event.end, {description: event.description});  
+        calendar.createEvent(eventName, event.start, event.end, {description: event.description});  
     } else {
         //create recurring events
         var startDate = event.start;
@@ -15,7 +15,7 @@ function createEvent(event, avObj) {
             var startTime = freeDates[i];
             var endTime = new Date(startTime.getTime() + duration);
 
-            calendar.createEvent(event.name, startTime, endTime, {description: event.description});
+            calendar.createEvent(eventName, startTime, endTime, {description: event.description});
         }
 
         var freeDateStrings = freeDates.map(function(e) { return e.toDateString(); });

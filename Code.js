@@ -22,7 +22,7 @@ function OnSubmit() {
     if (!preliminaryCheck(event)) {
         return;
     }
-debugger;
+
     var availObj = checkAvailability(event);
     if (!availObj) {
         //spot not available

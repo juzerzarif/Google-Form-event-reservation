@@ -32,6 +32,10 @@ function sendEmail(eventObj, reply) {
     var titleArr = Object.keys(itemTitles).map(function (e) {
         return itemTitles[e];
     });
+    
+    if (eventArr[6] != "Monthly") {
+        titleArr.splice(7, 1);
+    }
 
     var message = "<table style='border-collapse: collapse; border: 1px solid black' cellpadding='5'>";
 
@@ -52,7 +56,7 @@ function sendEmail(eventObj, reply) {
 
     if (reply) {
         reply += 
-        "\nExecutive Board"+
+        "\n\nExecutive Board"+
         "\nStephenson Scholarship Hall"+
         "\nUniversity of Kansas"+
         "\n~Ut Lyle Vivat~"+

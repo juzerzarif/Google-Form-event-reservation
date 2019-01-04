@@ -1,5 +1,6 @@
 function checkAvailability(event) {
     var calendar = CalendarApp.getDefaultCalendar();
+    
 
     if (event.recurrenceBool == "No") {
         if (calendar.getEvents(event.start, event.end).length > 0) {
@@ -9,81 +10,81 @@ function checkAvailability(event) {
             return true;
         }
     } else {
+        
+        var startDate = event.start;
+        var endDate = event.end;
+        var duration = endDate - startDate;
+        var stopDay = new Date(CacheService.getScriptCache().get("stopDayDate"));
+        var daylightDate = new Date(PropertiesService.getScriptProperties().getProperty("daylightSavingsDate"));
+        var daylightOffset = PropertiesService.getScriptProperties().getProperty("daylightSavingsOffset") - 0; //typecasting as a number
         var availabilityObj = {
             availability: "",
             busyDates: [],
             availableDates: []
         };
-        //    availabilityObj.availability = "full";
-      
-      debugger;
+                
+        var daylightFixDone = false;
 
-        if (event.recurrenceType == RECURRENCE.option1 || event.recurrenceType == RECURRENCE.option2) {
-            var msOffset = event.recurrenceType == RECURRENCE.option1 ? 7 * 24 * 60 * 60 * 1000 : 14 * 24 * 60 * 60 * 1000;
-
-            var startDate = event.start;
-            var endDate = event.end;
-            var stopDay = new Date(CacheService.getScriptCache().get("stopDayDate"));
-
-            while (startDate < stopDay) {
-                if (calendar.getEvents(startDate, endDate).length > 0) {
-                    availabilityObj.busyDates.push(startDate);
-                } else {
-                    availabilityObj.availableDates.push(startDate);
-                }
-
-                startDate = new Date(startDate.getTime() + msOffset);
-                endDate = new Date(endDate.getTime() + msOffset);
-            }
+        while (startDate < stopDay) {
             
-            if (availabilityObj.busyDates.length == 0) {
-                availabilityObj.availability = "full";
-            } else if (availabilityObj.availableDates.length == 0) {
-                availabilityObj.availability = "none";
-                sendEmail(event, "Unfortunately your reservation request has been denied. Your event conflicts with another event every week."); //TODO: write a better email
-                return false;
+            if(calendar.getEvents(startDate, endDate).length > 0) {
+                availabilityObj.busyDates.push(startDate);
             } else {
-                availabilityObj.availability = "partial";
+                availabilityObj.availableDates.push(startDate);
             }
 
-        } else if (event.recurrenceType == RECURRENCE.option3) {
-            var startDate = event.start;
-            var endDate = event.end;
-            var duration = event.end - event.start;
-            var stopDay = new Date(CacheService.getScriptCache().get("stopDayDate"));
+            if (event.recurrenceType == RECURRENCE.option1 || event.recurrenceType == RECURRENCE.option2) {
 
-            while (startDate < stopDay) {
-                if(calendar.getEvents(startDate, endDate) > 0) {
-                    availabilityObj.busyDates.push(startDate);
-                } else {
-                    availabilityObj.availableDates.push(startDate);
-                }
+                var msOffset = event.recurrenceType == RECURRENCE.option1 ? 7 * 24 * 60 * 60 * 1000 : 14 * 24 * 60 * 60 * 1000;
+                startDate = new Date(startDate.getTime() + msOffset);
+
+            } else if (event.recurrenceType == RECURRENCE.option3) {
 
                 startDate = new Date(startDate.getFullYear(), startDate.getMonth()+1, 1, startDate.getHours(), startDate.getMinutes());
-                var n = startDate.getDay();
-                var T = 0;
-                var j = 0;
+                var initialDay = startDate.getDay();
+                var targetDay = 0;
+                var weekOffset = 0;
                 for (var i=0; i<event.monthRecurrence.length; i++) {
                     if (event.monthRecurrence[i] == null) { continue; }
-                    var T = dayMap[event.monthRecurrence[i]];
-                    var j = i;
+                    var targetDay = dayMap[event.monthRecurrence[i]];
+                    var weekOffset = i;
                     break;
                 }
-                var x = n <= T ? (T - n) : (7 - (n - T));
-                startDate = new Date(startDate.getTime() + (x * 24 * 60 * 60 * 1000));
+                var daysOffset = initialDay <= targetDay ? (targetDay - initialDay) : (7 - (initialDay - targetDay));
+                startDate = new Date(startDate.getTime() + (daysOffset * 24 * 60 * 60 * 1000));
                 
-                if (j == 4) {
+                if (weekOffset == 4) { //Last x of the month
                     var tempDate = startDate;
                     while (tempDate.getMonth() == startDate.getMonth()) {
                         startDate = new Date(startDate.getTime() + (7 * 24 * 60 * 60 * 1000));
                     }
                     startDate = new Date(startDate.getTime() - (7 * 24 * 60 * 60 * 1000));
                 } else {
-                    startDate = new Date(startDate.getTime() + (j * 7 * 24 * 60 * 60 * 1000));
+                    startDate = new Date(startDate.getTime() + (weekOffset * 7 * 24 * 60 * 60 * 1000));
                 }
-                endDate = new Date(startDate.getTime() + duration);
             }
-        } 
+
+            if (event.start < daylightDate) {
+                if (startDate > daylightDate) {
+                    if (!daylightFixDone) {
+                        startDate.setHours(startDate.getHours() + daylightOffset);
+                        daylightFixDone = true;
+                    }
+                }
+            }
+
+            endDate = new Date(startDate.getTime() + duration);
+        }     
+
+        if (availabilityObj.busyDates.length == 0) {
+            availabilityObj.availability = "full";
+        } else if (availabilityObj.availableDates.length == 0) {
+            availabilityObj.availability = "none";
+            sendEmail(event, "Unfortunately your reservation request has been denied. Your event conflicts with another event every week."); //TODO: write a better email
+            return false;
+        } else {
+            availabilityObj.availability = "partial";
+        }
 
         return availabilityObj;
     }

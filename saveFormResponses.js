@@ -11,9 +11,10 @@ function saveFormResponses(items) {
     event.end = new Date(eventEnd.replace(/-/g, "/"));
     event.recurrenceBool = items[5].getResponse();
     event.recurrenceType = items[6].getResponse();
-    event.description = items[7].getResponse();
-    event.facilitiesBool = items[8].getResponse();
-    event.facilitiesDescription = items[9].getResponse();
+    event.monthRecurrence = items[7].getResponse();
+    event.description = items[8].getResponse();
+    event.facilitiesBool = items[9].getResponse();
+    event.facilitiesDescription = items[10].getResponse();
 
     return event;
 }

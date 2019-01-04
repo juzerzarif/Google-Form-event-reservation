@@ -17,15 +17,19 @@ function OnSubmit() {
     var items = responseArr[responseArr.length - 1].getItemResponses();
 
     var event = saveFormResponses(items);
+    debugger;
 
     if (!preliminaryCheck(event)) {
         return;
     }
 
-    if (!checkAvailability(event)) {
+    var availObj = checkAvailability(event);
+    if (!availObj) {
         //spot not available
         return;
     }
+    
+    createEvent(event, availObj);
 
     debugger;
 }

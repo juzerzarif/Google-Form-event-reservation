@@ -17,6 +17,7 @@ var itemTitles = {
     end: "Event End",
     recurringBool: "Is this a recurring event?",
     recurringType: "If answered yes above, explain the nature of recurrence",
+    monthRecurrence: "Monthly recurrence details",
     description: "Event Description",
     facilitiesBool: "Will you be using any of the facilities in the Rec Room?",
     facilitiesDescription: "If answered yes above, explain how and what facilities you will be using?"
@@ -50,6 +51,12 @@ function sendEmail(eventObj, reply) {
     });
 
     if (reply) {
+        reply += 
+        "\nExecutive Board"+
+        "\nStephenson Scholarship Hall"+
+        "\nUniversity of Kansas"+
+        "\n~Ut Lyle Vivat~"+
+        "\n\nThe president, vice-president, and social chairs of Stephenson Scholarship Hall hold the right to revoke this reservation at any time without prior notice.";
         try {
             Utilities.sleep(5000);
             var emailThreads = GmailApp.search("subject: Rec Room Reservation Form", 0, 1);
@@ -74,3 +81,7 @@ var event1 = {
     facilitiesBool: "Will you be using any of the facilities in the Rec Room?",
     facilitiesDescription: "If answered yes above, explain how and what facilities you will be using?"
 };
+
+function update() {
+  CacheService.getScriptCache().put("stopDayDate", "Friday, May 10, 2019");
+}

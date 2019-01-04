@@ -25,14 +25,20 @@ function preliminaryCheck(event) {
         return false;
     }
 
-    var emailRegex = /^(([^<>()[]\.,;:s@"]+(.[^<>()[]\.,;:s@"]+)*)|(".+"))@(([[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}])|(([a-zA-Z-0-9]+.)+[a-zA-Z]{2,}))$/;
+    var emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
     if (!emailRegex.test(event.organizerEmail)) {
         sendEmail(event, false);
         return false;
     }
 
+    var recurrenceTest = (event.recurrenceType == RECURRENCE.option3 && event.monthRecurrence.length == 0);
+    if (recurrenceTest) {
+        sendEmail(event, false);
+        return false;
+    }
+
     var recur = event.recurrenceType;
-    if (recur != RECURRENCE.option1 && recur != RECURRENCE.option2 && recur != RECURRENCE.option3) {
+    if (event.recurrenceBool == "Yes" && recur != RECURRENCE.option1 && recur != RECURRENCE.option2 && recur != RECURRENCE.option3) {
         sendEmail(event, false);
         return false;
     }

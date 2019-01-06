@@ -31,16 +31,23 @@ function preliminaryCheck(event) {
         return false;
     }
 
-    var recurrenceTest = (event.recurrenceType == RECURRENCE.option3 && event.monthRecurrence.length == 0);
-    if (recurrenceTest) {
-        sendEmail(event, false);
-        return false;
-    }
+    if (event.recurrenceBool == "Yes") {
+        if (event.recurrenceType == "") {
+            sendEmail(event, "Unfortunately, your reservation request cannot be processed. You need to specify the nature of the recurrence of your event.");
+            return false;
+        }
 
-    var recur = event.recurrenceType;
-    if (event.recurrenceBool == "Yes" && recur != RECURRENCE.option1 && recur != RECURRENCE.option2 && recur != RECURRENCE.option3) {
-        sendEmail(event, false);
-        return false;
+        var recurrenceTest = (event.recurrenceType == GLOBAL.RECURRENCE.option3 && event.monthRecurrence.length == 0);
+        if (recurrenceTest) {
+            sendEmail(event, "Unfortunately, your reservation request cannot be processed. You need to specify the monthly recurrence of your event.");
+            return false;
+        }
+
+        var recur = event.recurrenceType;
+        if (recur != GLOBAL.RECURRENCE.option1 && recur != GLOBAL.RECURRENCE.option2 && recur != GLOBAL.RECURRENCE.option3) {
+            sendEmail(event, false);
+            return false;
+        }
     }
 
     if (/wilbur/i.test(event.organizer) && /nether/i.test(event.organizer)) {

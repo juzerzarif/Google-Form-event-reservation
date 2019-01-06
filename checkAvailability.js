@@ -33,12 +33,12 @@ function checkAvailability(event) {
                 availabilityObj.availableDates.push(startDate);
             }
 
-            if (event.recurrenceType == RECURRENCE.option1 || event.recurrenceType == RECURRENCE.option2) {
+            if (event.recurrenceType == GLOBAL.RECURRENCE.option1 || event.recurrenceType == GLOBAL.RECURRENCE.option2) {
 
-                var msOffset = event.recurrenceType == RECURRENCE.option1 ? 7 * 24 * 60 * 60 * 1000 : 14 * 24 * 60 * 60 * 1000;
+                var msOffset = event.recurrenceType == GLOBAL.RECURRENCE.option1 ? 7 * 24 * 60 * 60 * 1000 : 14 * 24 * 60 * 60 * 1000;
                 startDate = new Date(startDate.getTime() + msOffset);
 
-            } else if (event.recurrenceType == RECURRENCE.option3) {
+            } else if (event.recurrenceType == GLOBAL.RECURRENCE.option3) {
 
                 startDate = new Date(startDate.getFullYear(), startDate.getMonth()+1, 1, startDate.getHours(), startDate.getMinutes());
                 var initialDay = startDate.getDay();
@@ -46,7 +46,7 @@ function checkAvailability(event) {
                 var weekOffset = 0;
                 for (var i=0; i<event.monthRecurrence.length; i++) {
                     if (event.monthRecurrence[i] == null) { continue; }
-                    var targetDay = dayMap[event.monthRecurrence[i]];
+                    var targetDay = GLOBAL.dayMap[event.monthRecurrence[i]];
                     var weekOffset = i;
                     break;
                 }
@@ -88,14 +88,4 @@ function checkAvailability(event) {
 
         return availabilityObj;
     }
-}
-
-var dayMap = {
-  Sunday: 0,
-  Monday: 1,
-  Tuesday: 2,
-  Wednesday: 3,
-  Thursday: 4,
-  Friday: 5,
-  Saturday: 6
 }

@@ -17,7 +17,7 @@ function OnSubmit() {
     var items = responseArr[responseArr.length - 1].getItemResponses();
 
     var event = saveFormResponses(items);
-//    debugger;
+    debugger;
 
     if (!preliminaryCheck(event)) {
         return;
@@ -33,9 +33,3 @@ function OnSubmit() {
 
     debugger;
 }
-
-var RECURRENCE = {
-    option1: "Weekly (Same day every week)",
-    option2: "Biweekly (Same day every two weeks)",
-    option3: "Monthly"
-}; 

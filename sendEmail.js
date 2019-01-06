@@ -1,41 +1,13 @@
-//  0 = Name
-//  1 = Email
-//  2 = Event Name
-//  3 = Event Start
-//  4 = Event End 
-//  5 = Is this a recurring event
-//  6 = If so, explain the nature of recurrence
-//  7 = Event Description
-//  8 = Will you be using Rec Room facilities
-//  9 = What facilities?
-
-var itemTitles = {
-    organizer: "Name",
-    organizerEmail: "Email",
-    name: "Event Name",
-    start: "Event Start",
-    end: "Event End",
-    recurringBool: "Is this a recurring event?",
-    recurringType: "If answered yes above, explain the nature of recurrence",
-    monthRecurrence: "Monthly recurrence details",
-    description: "Event Description",
-    facilitiesBool: "Will you be using any of the facilities in the Rec Room?",
-    facilitiesDescription: "If answered yes above, explain how and what facilities you will be using?"
-};
-
 function sendEmail(eventObj, reply) {
     var eventArr = Object.keys(eventObj).map(function (e) {
         return eventObj[e];
     });
     eventArr[3] = eventArr[3].toLocaleString();
     eventArr[4] = eventArr[4].toLocaleString();
-    var titleArr = Object.keys(itemTitles).map(function (e) {
-        return itemTitles[e];
-    });
     
-    if (eventArr[6] != "Monthly") {
-        titleArr.splice(7, 1);
-    }
+    var titleArr = Object.keys(eventObj).map(function (e) {
+        return GLOBAL.itemTitles[e];
+    });
 
     var message = "<table style='border-collapse: collapse; border: 1px solid black' cellpadding='5'>";
 
@@ -53,6 +25,20 @@ function sendEmail(eventObj, reply) {
         replyTo: eventObj.organizerEmail,
         htmlBody: message
     });
+
+    var now = new Date();
+    var yearLabel;
+    if (now.getMonth() < 5) {
+        yearLabel = (now.getFullYear() - 1) + "-" + (now.getFullYear() % 100);
+    } else {
+        yearLabel = now.getFullYear() + "-" + ((now.getFullYear() + 1) % 100);
+    }
+    var labelName = "Rec Room Reservation Requests/" + yearLabel;
+
+    var allLabels = GmailApp.getUserLabels().map(function (e) {
+        return e.getName();
+    });
+    debugger;
 
     if (reply) {
         reply += 

@@ -25,21 +25,7 @@ function sendEmail(eventObj, reply) {
         replyTo: eventObj.organizerEmail,
         htmlBody: message
     });
-
-    var now = new Date();
-    var yearLabel;
-    if (now.getMonth() < 5) {
-        yearLabel = (now.getFullYear() - 1) + "-" + (now.getFullYear() % 100);
-    } else {
-        yearLabel = now.getFullYear() + "-" + ((now.getFullYear() + 1) % 100);
-    }
-    var labelName = "Rec Room Reservation Requests/" + yearLabel;
-
-    var allLabels = GmailApp.getUserLabels().map(function (e) {
-        return e.getName();
-    });
-    debugger;
-
+    
     if (reply) {
         reply += 
         "\n\nExecutive Board"+
@@ -57,6 +43,39 @@ function sendEmail(eventObj, reply) {
             return;
         }
     }
+}
+
+function addLabel() {
+    var now = new Date();
+    var yearLabel;
+    if (now.getMonth() < 5) {
+        yearLabel = (now.getFullYear() - 1) + "-" + (now.getFullYear() % 100);
+    } else {
+        yearLabel = now.getFullYear() + "-" + ((now.getFullYear() + 1) % 100);
+    }
+    var labelName = "Rec Room Reservation Requests/" + yearLabel;
+
+    var allLabels = GmailApp.getUserLabels().map(function (e) {
+        return e.getName();
+    });
+
+    var label;
+    if (allLabels.indexOf(labelName) == -1) {
+        label = GmailApp.createLabel(labelName);
+    } else {
+        label = GmailApp.getUserLabelByName(labelName);
+    }
+
+    try {
+        var thread = GmailApp.search("subject: Rec Room Reservation Form", 0, 1)[0];
+        Logger.log(thread.getFirstMessageSubject());
+        label.addToThread(thread);
+        Logger.log(thread.getLabels().map(function(e){e.getName();}));
+    } catch (e) {
+        Logger.log(e);
+    }
+
+    debugger;
 }
 
 function update() {

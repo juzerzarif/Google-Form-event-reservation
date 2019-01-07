@@ -34,7 +34,7 @@ function updateCache() {
         fallStart = new Date(fallStart.getTime() - TWO_DAYS);
         fallEnd = new Date(findDate(registrarPage, "Stop Day"));
 
-        if (now >= springStart && now <= springEnd) {
+        if (now >= fallStart && now <= fallEnd) {
             cache.put("stopDayDate", fallEnd, 25 * 60 * 60);
         } else {
             cache.put("stopDayDate", null, 25 * 60 * 60);

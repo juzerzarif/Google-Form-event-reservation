@@ -5,67 +5,42 @@ function updateCache() {
     var TWO_DAYS = 48 * 60 * 60 * 1000; //ms 
 
     var now = new Date();
-    var fallStart = new Date(now.getFullYear(), 7, 1);
-    var fallEnd = new Date(now.getFullYear(), 11, 31);
-    var springStart = new Date(now.getFullYear(), 0, 1);
-    var springEnd = new Date(now.getFullYear(), 4, 31);
-
     var semester = "";
     var year = now.getFullYear();
 
-    if (now > springStart && now < springEnd) {
-        url = "https://registrar.ku.edu/spring-" + year + "-academic-calendar-date";
-        registrarPage = UrlFetchApp.fetch(url).getContentText();
-        springStart = new Date(findDate(registrarPage, "First day of classes"));
-        springStart = new Date(springStart.getTime() - TWO_DAYS);
-        springEnd = new Date(findDate(registrarPage, "Stop Day"));
-
-        if (now >= springStart && now <= springEnd) {
-            cache.put("stopDayDate", springEnd, 25 * 60 * 60);
-        } else {
-            cache.put("stopDayDate", null, 25 * 60 * 60);
-        }
-
-        return;
-    } else if (now > fallStart && now < fallEnd) {
-        url = "https://registrar.ku.edu/fall-" + year + "-academic-calendar-date";
-        registrarPage = UrlFetchApp.fetch(url).getContentText();
-        fallStart = new Date(findDate(registrarPage, "First day of classes"));
-        fallStart = new Date(fallStart.getTime() - TWO_DAYS);
-        fallEnd = new Date(findDate(registrarPage, "Stop Day"));
-
-        if (now >= fallStart && now <= fallEnd) {
-            cache.put("stopDayDate", fallEnd, 25 * 60 * 60);
-        } else {
-            cache.put("stopDayDate", null, 25 * 60 * 60);
-        }
-
-        return;
+    if (now.getMonth() >= 0 && now.getMonth() <= 4) {
+        semester = "spring";
+    } else if (now.getMonth() >= 7 && now.getMonth() <= 11) {
+        semester = "fall";
     } else {
-        cache.put("stopDayDate", null, 25 * 60 * 60);
+        cache.put("stopDayDate", null, 6 * 60 * 60);
         return;
+    }
+    
+    url = "https://registrar.ku.edu/" + semester + "-" + year + "-academic-calendar-date";
+    registrarPage = UrlFetchApp.fetch(url).getContentText();
+    
+    var start = new Date(findDate(registrarPage, "First day of classes"));
+    start = new Date(start.getTime() - TWO_DAYS);
+    
+    var end = new Date(findDate(registrarPage, "Stop Day"));
+
+    if (now >= start && now <= end) {
+        cache.put("stopDayDate", end, 6 * 60 * 60);
+    } else {
+        cache.put("stopDayDate", null, 6 * 60 * 60);
     }
 
 }
 
 function findDate(webpage, label) {
-    var labelIndex = webpage.indexOf(label);
-    var tagIndex = 0;
-    var dateIndex = 0;
+    var regex = new RegExp('[\\w\\s,]+</td>\\s+<td[^<]*>'+label+'</td>');
+    var partial = webpage.match(regex);
 
-    var start = 0;
-    var tempIndex = 0;
-    while ((tempIndex = webpage.indexOf("</td>", start)) < labelIndex) {
-        start = tempIndex + 5;
-        tagIndex = tempIndex;
+    if (partial == null) {
+        throw new Error("Couldn't find date on webpage");
+    } else {
+        var date = partial[0].substring(0, partial[0].indexOf('</td>'));
+        return date;
     }
-
-    start = 0, tempIndex = 0;
-    while ((tempIndex = webpage.indexOf(">", start)) < tagIndex) {
-        start = tempIndex + 1;
-        dateIndex = tempIndex + 1;
-    }
-
-    var date = webpage.substring(dateIndex, tagIndex);
-    return date;
 }

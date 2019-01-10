@@ -1,6 +1,8 @@
 function createEvent(event, avObj) {
     var calendar = CalendarApp.getDefaultCalendar();
     var eventName = "["+event.organizer.split(" ")[0]+"] "+event.name;
+    var daylightDate = new Date(PropertiesService.getScriptProperties().getProperty("daylightSavingsDate"));
+    
     if (event.recurrenceBool == "No") {
         //create a single event
         calendar.createEvent(eventName, event.start, event.end, {description: event.description});  
@@ -11,18 +13,32 @@ function createEvent(event, avObj) {
         var duration = endDate - startDate;
         var freeDates = avObj.availableDates;
         
-      var recurrence = CalendarApp.newRecurrence().setTimeZone("America/Chicago");
+        var recurrence = CalendarApp.newRecurrence();
         for (var i=0; i<freeDates.length; i++) {
-            var startTime = freeDates[i];
-//            var endTime = new Date(startTime.getTime() + duration);
+            var eventDate = freeDates[i];
             
-            recurrence.addDate(startTime);
-//            calendar.createEvent(eventName, startTime, endTime, {description: event.description});
+            recurrence.addDate(eventDate);
         }
-        calendar.createEventSeries(event.name, event.start, event.end, recurrence);
+        var seriesId = calendar.createEventSeries(eventName, event.start, event.end, recurrence, {description: event.description}).getId();
+        
+        if (startDate < daylightDate) {
+            var toFixDates = freeDates.filter(function(date) { return date.getMonth() == daylightDate.getMonth(); });
+            
+            for (var i=0; i<toFixDates.length; i++) {
+
+                var eventList = calendar.getEventsForDay(toFixDates[i], {search: eventName});
+                
+                eventList.forEach(function(e) {  
+                    if(e.getId() == seriesId) {
+                        var start = toFixDates[i];
+                        var end = new Date(start.getTime() + duration);
+                        e.setTime(start, end);
+                    }
+                });
+            }
+        }
 
         var freeDateStrings = freeDates.map(function(e) { return e.toDateString(); });
-        var busyDateStrings = avObj.busyDates.map(function(e) { return e.toDateString(); });
 
         var reply = "";
         if (avObj.availability == "full") {

@@ -78,5 +78,5 @@ function addRecRoomLabel() {
         Logger.log(e);
     }
 
-    debugger;
+//    debugger;
 }

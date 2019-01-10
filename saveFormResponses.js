@@ -1,5 +1,5 @@
 
-function saveFormResponsesOne(items) {
+function saveFormResponses(items) {
     var event = {};
 
     for (var i=0; i<items.length; i++) {

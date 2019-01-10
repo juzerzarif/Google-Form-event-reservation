@@ -9,7 +9,7 @@
 //  8 = Will you be using Rec Room facilities
 //  9 = What facilities?
 
-function OnSubmit() {
+function formSubmit() {
 
     var testForm = FormApp.openById("1JK2oTlp-uzfqfRGBqA1DPbMzLqZWAW0HsUuo3bDpfOk");
 
@@ -17,7 +17,7 @@ function OnSubmit() {
     var items = responseArr[responseArr.length - 1].getItemResponses();
 
     var event = saveFormResponses(items);
-    debugger;
+//    debugger;
 
     if (!preliminaryCheck(event)) {
         return;
@@ -31,5 +31,9 @@ function OnSubmit() {
 
     createEvent(event, availObj);
 
-    debugger;
+//    debugger;
+}
+
+function update() {
+  CacheService.getScriptCache().put("stopDayDate", "Friday, May 10, 2019");
 }

@@ -26,6 +26,8 @@ function sendEmail(eventObj, reply) {
         htmlBody: message
     });
     
+    addRecRoomLabel();
+    
     if (reply) {
         reply += 
         "\n\nExecutive Board"+
@@ -37,6 +39,7 @@ function sendEmail(eventObj, reply) {
             Utilities.sleep(5000);
             var emailThreads = GmailApp.search("subject: Rec Room Reservation Form", 0, 1);
             var mostRecentEmail = emailThreads[0];
+//            mostRecentEmail.removeLabel(GmailApp.getUserLabelByName("Inbox"));
             mostRecentEmail.reply(reply);
         } catch (e) {
             Logger.log(e);
@@ -45,7 +48,7 @@ function sendEmail(eventObj, reply) {
     }
 }
 
-function addLabel() {
+function addRecRoomLabel() {
     var now = new Date();
     var yearLabel;
     if (now.getMonth() < 5) {
@@ -69,15 +72,11 @@ function addLabel() {
     try {
         var thread = GmailApp.search("subject: Rec Room Reservation Form", 0, 1)[0];
         Logger.log(thread.getFirstMessageSubject());
-        label.addToThread(thread);
+        thread.addLabel(label);
         Logger.log(thread.getLabels().map(function(e){e.getName();}));
     } catch (e) {
         Logger.log(e);
     }
 
     debugger;
-}
-
-function update() {
-  CacheService.getScriptCache().put("stopDayDate", "Friday, May 10, 2019");
 }

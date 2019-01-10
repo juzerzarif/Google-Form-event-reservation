@@ -10,13 +10,16 @@ function createEvent(event, avObj) {
         var endDate = event.end;
         var duration = endDate - startDate;
         var freeDates = avObj.availableDates;
-
+        
+      var recurrence = CalendarApp.newRecurrence().setTimeZone("America/Chicago");
         for (var i=0; i<freeDates.length; i++) {
             var startTime = freeDates[i];
-            var endTime = new Date(startTime.getTime() + duration);
-
-            calendar.createEvent(eventName, startTime, endTime, {description: event.description});
+//            var endTime = new Date(startTime.getTime() + duration);
+            
+            recurrence.addDate(startTime);
+//            calendar.createEvent(eventName, startTime, endTime, {description: event.description});
         }
+        calendar.createEventSeries(event.name, event.start, event.end, recurrence);
 
         var freeDateStrings = freeDates.map(function(e) { return e.toDateString(); });
         var busyDateStrings = avObj.busyDates.map(function(e) { return e.toDateString(); });

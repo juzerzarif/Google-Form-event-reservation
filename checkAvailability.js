@@ -38,6 +38,11 @@ function checkAvailability(event) {
                 var msOffset = event.recurrenceType == GLOBAL.RECURRENCE.option1 ? 7 * 24 * 60 * 60 * 1000 : 14 * 24 * 60 * 60 * 1000;
                 startDate = new Date(startDate.getTime() + msOffset);
 
+                if (!daylightFixDone && event.start < daylightDate && startDate > daylightDate) {
+                    startDate.setHours(startDate.getHours() + daylightOffset);
+                    daylightFixDone = true;
+                }
+
             } else if (event.recurrenceType == GLOBAL.RECURRENCE.option3) {
 
                 startDate = new Date(startDate.getFullYear(), startDate.getMonth()+1, 1, startDate.getHours(), startDate.getMinutes());
@@ -62,14 +67,10 @@ function checkAvailability(event) {
                 } else {
                     startDate = new Date(startDate.getTime() + (weekOffset * 7 * 24 * 60 * 60 * 1000));
                 }
-            }
 
-            if (event.start < daylightDate) {
-                if (startDate > daylightDate) {
-                    if (!daylightFixDone) {
-                        startDate.setHours(startDate.getHours() + daylightOffset);
-                        daylightFixDone = true;
-                    }
+                if (!daylightFixDone && event.start < daylightDate && startDate.getMonth() == daylightDate.getMonth() && startDate > daylightDate) {
+                    startDate.setHours(startDate.getHours() + daylightOffset);
+                    daylightFixDone = true;
                 }
             }
 

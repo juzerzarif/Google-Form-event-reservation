@@ -5,7 +5,8 @@ function createEvent(event, avObj) {
     
     if (event.recurrenceBool == "No") {
         //create a single event
-        calendar.createEvent(eventName, event.start, event.end, {description: event.description});  
+        calendar.createEvent(eventName, event.start, event.end, {description: event.description});
+        sendEmail(event, "Congratulations, your reservation request has been successfully approved!");  
     } else {
         //create recurring events
         var startDate = event.start;

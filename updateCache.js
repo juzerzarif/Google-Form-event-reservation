@@ -18,12 +18,21 @@ function updateCache() {
     }
     
     url = "https://registrar.ku.edu/" + semester + "-" + year + "-academic-calendar-date";
-    registrarPage = UrlFetchApp.fetch(url).getContentText();
-    
-    var start = new Date(findDate(registrarPage, "First day of classes"));
-    start = new Date(start.getTime() - TWO_DAYS);
-    
-    var end = new Date(findDate(registrarPage, "Stop Day"));
+    try {
+        registrarPage = UrlFetchApp.fetch(url).getContentText();
+        
+        var start = new Date(findDate(registrarPage, "First day of classes"));
+        start = new Date(start.getTime() - TWO_DAYS);
+        
+        var end = new Date(findDate(registrarPage, "Stop Day"));
+    } catch(e) {
+        var errorMessage = "There was an error updating the stop day cache for the Rec Room reservation script. The error details are as follows:\n\n"+
+        e+"\n\nPlease manually update the cache to allow the script to run without further errors.";
+
+        GmailApp.sendEmail("stephensonscholhall52@gmail.com", "Error updating script cache", errorMessage);
+        cache.put("stopDayDate", "ERROR", 6 * 60 * 60);
+        return;
+    }
 
     if (now >= start && now <= end) {
         cache.put("stopDayDate", end, 6 * 60 * 60);

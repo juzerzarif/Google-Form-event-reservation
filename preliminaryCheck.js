@@ -2,10 +2,16 @@ function preliminaryCheck(event) {
 
     var stopDay = CacheService.getScriptCache().get("stopDayDate");
     if (stopDay == null) {
-        //requests are not being processes during the summer
+        //requests are not being processes during breaks
         sendEmail(event, "Unfortunately, reservation requests are not being processed over break. " +
             "Please retry submitting your reservation request 48 hours prior to the start of classes at the earliest. " +
             "Thank you for your patience.");
+        return false;
+    }
+    if (stopDay == "ERROR") {
+        sendEmail(event, "Reservation requests are not currently being automatically processed. "+
+            "If you do not receive a response with the status of your request within 24 hours please contact the president of Stephenson Scholarship Hall. "+
+            "Thank you for your patience.", true);
         return false;
     }
 
@@ -37,7 +43,7 @@ function preliminaryCheck(event) {
             return false;
         }
 
-        var recurrenceTest = (event.recurrenceType == GLOBAL.RECURRENCE.option3 && event.monthRecurrence.length == 0);
+        var recurrenceTest = (event.recurrenceType == GLOBAL.RECURRENCE.option3 && !event.hasOwnProperty("monthRecurrence"));
         if (recurrenceTest) {
             sendEmail(event, "Unfortunately, your reservation request cannot be processed. You need to specify the monthly recurrence of your event.");
             return false;

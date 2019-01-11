@@ -1,10 +1,27 @@
-function sendEmail(eventObj, reply) {
+function sendEmail(eventObj, reply, scriptError) {
+    var monthRecurrenceMap = {
+        0: "First",
+        1: "Second",
+        2: "Third",
+        3: "Fourth",
+        4: "Last"
+    }
+    
     var eventArr = Object.keys(eventObj).map(function (e) {
         return eventObj[e];
     });
     eventArr[3] = eventArr[3].toLocaleString();
     eventArr[4] = eventArr[4].toLocaleString();
-    
+    if (eventObj.hasOwnProperty("monthRecurrence")) {
+        var monthRecurrenceArr = eventObj.monthRecurrence;
+        monthRecurrenceArr.some(function(day, i) {
+            if (day != null) {
+                eventArr[7] = monthRecurrenceMap[i] + " " + day;
+                return true;
+            }
+        });
+    }
+
     var titleArr = Object.keys(eventObj).map(function (e) {
         return GLOBAL.itemTitles[e];
     });
@@ -20,6 +37,10 @@ function sendEmail(eventObj, reply) {
     message += "</table>";
 
     var subjectLine = "Rec Room Reservation Form" + (reply ? " - Auto-reply" : " - Action required");
+    if(scriptError) {
+        subjectLine = "Rec Room Reservation Form - Action required";
+    }
+
     GmailApp.sendEmail("stephensonscholhall52@gmail.com", subjectLine, "", {
         name: eventObj.organizer,
         replyTo: eventObj.organizerEmail,
@@ -29,6 +50,7 @@ function sendEmail(eventObj, reply) {
     addRecRoomLabel();
     
     if (reply) {
+        reply = "Hello " + event.organizer + ",\n\n" + reply;
         reply += 
         "\n\nExecutive Board"+
         "\nStephenson Scholarship Hall"+
@@ -39,7 +61,6 @@ function sendEmail(eventObj, reply) {
             Utilities.sleep(5000);
             var emailThreads = GmailApp.search("subject: Rec Room Reservation Form", 0, 1);
             var mostRecentEmail = emailThreads[0];
-//            mostRecentEmail.removeLabel(GmailApp.getUserLabelByName("Inbox"));
             mostRecentEmail.reply(reply);
         } catch (e) {
             Logger.log(e);
@@ -63,6 +84,7 @@ function addRecRoomLabel() {
     });
 
     var label;
+  debugger;
     if (allLabels.indexOf(labelName) == -1) {
         label = GmailApp.createLabel(labelName);
     } else {
@@ -78,5 +100,4 @@ function addRecRoomLabel() {
         Logger.log(e);
     }
 
-//    debugger;
 }

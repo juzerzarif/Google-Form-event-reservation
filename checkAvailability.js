@@ -64,8 +64,8 @@ function checkAvailability(event) {
                 var weekOffset = 0; //the week we need to get to (_______ Monday of the month)
                 for (var i=0; i<event.monthRecurrence.length; i++) {
                     if (event.monthRecurrence[i] == null) { continue; }
-                    var targetDay = GLOBAL.dayMap[event.monthRecurrence[i]];
-                    var weekOffset = i;
+                    targetDay = GLOBAL.dayMap[event.monthRecurrence[i]];
+                    weekOffset = i;
                     break;
                 }
                 var daysOffset = initialDay <= targetDay ? (targetDay - initialDay) : (7 - (initialDay - targetDay)); //number of days we need to add to get to the first

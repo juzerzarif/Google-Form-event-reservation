@@ -6,7 +6,7 @@ Hi all! This is a sweet script that will let you automatically create a Google C
 - My time is worthless and I have boat loads of it
 - I wanted something that could create recurring events and then I added a couple little special features for my specific use case (I'll go more into it later)
 
-[](form.gif)
+[](resources/form.gif)
 
 So as I said before, the main feature I was looking for was the ability to add recurring events from a form and none of the solutions I found really offered that. Another detail you may notice when you look at the form is that it doesn't specify when to stop the recurring events - now that is because of my use case of this script. I've primarily created this script so we can use it to reserve the rec room in the on campus housing facility where I live on KU's campus, Stephenson Scholarship Hall. So anyone that wants a recurring event wants it to recur till the end of the semester (Stop Day) and so asking people to specify that date seemed kind of user-unfriendly(? Is that a phrase?). But I also can't hardcode the value in unless I plan on updating the script every semester which I don't plan to do (I'm lazy and I'm graduating) so I need to somehow update that value automatically. This is done by the function `updateCache` in the file of the same name. I use the script cache to store the Stop Day date which I fetch from the KU registrar's academic calendar webpage - this updates every 6 hours mostly because that's the maximum amount of time before a cache expires. 
 

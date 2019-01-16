@@ -63,7 +63,8 @@ function sendEmail(eventObj, reply, scriptError) {
         "\nStephenson Scholarship Hall"+
         "\nUniversity of Kansas"+
         "\n~Ut Lyle Vivat~"+
-        "\n\nThe president, vice-president, and social chairs of Stephenson Scholarship Hall hold the right to revoke all rec room reservations at any time without prior notice.";
+        "\n\nThe president, vice-president, and social chairs of Stephenson Scholarship Hall hold the right to revoke all rec room reservations at any time without prior notice. "+
+        "Additionally, all rec room reservations are void during KU basketball and KU football games.";
         try {
             Utilities.sleep(5000); // wait just in case, I mean email IS a best effort service
             var emailThreads = GmailApp.search("subject: Rec Room Reservation Form", 0, 1); // starting from the most recent (0), search for 1 thread that meets the search criteria

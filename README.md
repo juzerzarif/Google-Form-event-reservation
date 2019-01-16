@@ -1,6 +1,6 @@
 # Create a Google Calendar event automatically from a Google Form
 
->_Note: If you are here because you live in Stephenson and something has gone wrong and you are trying to figure out how to fix it, please see the [wiki](https://github.com/juzerzarif/Google-Form-event-reservation)._
+>_Note: If you are here because you live in Stephenson and something has gone wrong and you are trying to figure out how to fix it, please see the [wiki](https://github.com/juzerzarif/Google-Form-event-reservation/wiki)._
 
 Hi all! This is a sweet script that will let you automatically create a Google Calendar event when someone submits a Google Form. But there's like a million of these apps on the internet so why would I make my own script and waste my time. Two reasons: 
 - My time is worthless and I have boat loads of it
